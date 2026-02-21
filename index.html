@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coffee House Premium</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+html{
+scroll-behavior:smooth;
+}
+
+body{
+font-family:'Poppins',sans-serif;
+background:url("coffee-bg.jpg") no-repeat center center fixed;
+background-size:cover;
+color:#2b1b12;
+
+/* ОБʼЄДНАНИЙ transition */
+transition:background .4s ease, 
+color .4s ease, 
+opacity .25s ease;
+}
+
+body.dark{
+background:url("coffee-dark.jpg") no-repeat center center fixed;
+background-size:cover;
+color:#f5f5f5;
+}
+
+body.lang-fade{
+opacity:0;
+}
+/* HEADER */
+header{
+position:fixed;
+top:0;
+width:100%;
+padding:12px 50px;
+display:grid;
+grid-template-columns:auto 1fr;
+align-items:center;
+background:rgba(255,255,255,0.75);
+backdrop-filter:blur(14px);
+border-bottom:1px solid rgba(0,0,0,0.05);
+z-index:1000;
+transition:all .3s ease;
+}
+
+body.dark header{
+background:rgba(0,0,0,0.7);
+border-bottom:1px solid rgba(255,255,255,0.05);
+}
+
+.logo{
+font-family:'Playfair Display',serif;
+font-size:20px;
+letter-spacing:2px;
+font-weight:700;
+}
+.right-block{
+display:flex;
+align-items:center;
+justify-self:end;
+}
+.menu-row{
+justify-self:end;
+display:flex;
+gap:35px;
+align-items:center;
+}
+
+.menu-row a{
+text-decoration:none;
+color:#3e2723;
+font-weight:600;
+min-width:95px;
+text-align:center;
+transition:color 0.3s ease;
+}
+
+.menu-row a:hover{
+color:#ff9800;
+}
+
+body.dark .menu-row a{
+color:#fff;
+}
+
+body.dark .menu-row a:hover{
+color:#6ee7b7;
+}
+
+
+/* LANGUAGE BUTTONS */
+
+
+.lang-btn:hover{
+transform:scale(1.1);
+}
+
+.lang-btn.active{
+background:#ff9800;
+color:#fff;
+box-shadow:0 0 10px rgba(255,152,0,.8);
+}
+
+/* DARK MODE */
+
+body.dark .lang-btn{
+background:#ffffff;              /* завжди світлі */
+color:#111;
+border:2px solid #6ee7b7;
+flex-shrink:0;
+}
+
+body.dark .lang-btn.active{
+background:#6ee7b7;
+color:#111;
+box-shadow:0 0 12px rgba(110,231,183,.9);
+}
+
+
+/* THEME BUTTON */
+.theme-btn{
+width:34px;
+height:34px;
+border-radius:8px;
+cursor:pointer;
+background:#3e2723;
+color:white;
+font-weight:600;
+transition:.3s;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+body.dark .theme-btn{
+background:#6ee7b7;
+color:#111;
+}
+
+.theme-btn:hover{
+transform:scale(1.05);
+}
+/* HERO */
+.hero{
+display:grid;
+grid-template-columns:1fr 1fr;
+align-items:center;
+justify-items:center;
+padding:140px 10% 60px;
+gap:50px;
+min-height:80vh;
+position:relative;
+}
+
+.hero::before{
+content:"";
+position:absolute;
+inset:0;
+background:linear-gradient(
+to right,
+rgba(255,255,255,0.85) 40%,
+rgba(255,255,255,0.3) 70%,
+rgba(255,255,255,0) 100%
+);
+z-index:0;
+}
+
+body.dark .hero::before{
+background:linear-gradient(
+to right,
+rgba(0,0,0,0.8) 40%,
+rgba(0,0,0,0.4) 70%,
+rgba(0,0,0,0) 100%
+);
+}
+
+.hero *{
+position:relative;
+z-index:1;
+}
+
+.hero-left h2{
+font-family:'Playfair Display',serif;
+font-size:42px;
+margin-bottom:20px;
+}
+
+.hero-left p{
+margin-bottom:20px;
+line-height:1.7;
+font-size:18px;
+}
+
+.hero-left ul{
+padding-left:20px;
+line-height:1.7;
+}
+
+.hero-right img{
+width:100%;
+border-radius:20px;
+box-shadow:0 20px 40px rgba(0,0,0,.3);
+}
+
+/* MAIN */
+main{
+padding-top:40px;
+max-width:1200px;
+margin:auto;
+}
+
+
+/* CATEGORY */
+.category-title{
+background:#3e2723;
+color:white;
+padding:16px;
+margin:20px;
+border-radius:15px;
+cursor:pointer;
+font-weight:600;
+font-size:18px;
+text-align:center;
+transition:.3s;
+}
+
+.category-title:hover{
+background:#5d4037;
+transform:translateY(-2px);
+}
+/* MENU TITLE (не клікабельний) */
+#menuTitle{
+cursor:default;
+pointer-events:none;
+}
+
+#menuTitle:hover{
+background:#3e2723;
+box-shadow:none;
+}
+.section{
+max-height:0;
+overflow:hidden;
+opacity:0;
+transition:max-height .5s ease, opacity .4s ease;
+padding:0 20px;
+}
+
+.section.open{
+max-height:1000px;
+opacity:1;
+padding:10px 20px 30px;
+}
+
+.items{
+display:flex;
+flex-wrap:wrap;
+gap:25px;
+justify-content:center;
+}
+
+/* CARD */
+.card{
+width:240px;
+background:rgba(255,255,255,.95);
+border-radius:20px;
+padding:18px;
+text-align:center;
+box-shadow:0 15px 40px rgba(0,0,0,0.08);
+
+/* ДОДАНО */
+opacity:0;
+transform:translateY(20px);
+
+/* ОБʼЄДНАНИЙ transition */
+transition:opacity .4s ease,
+transform .4s ease,
+box-shadow .3s ease;
+}
+.section.open .card{
+opacity:1;
+transform:translateY(0);
+}
+
+body.dark .card{
+background:rgba(0,0,0,.6);
+}
+
+.card:hover{
+transform:translateY(-8px);
+box-shadow:0 20px 50px rgba(0,0,0,0.15);
+}
+
+.image-placeholder{
+width:100%;
+height:150px;
+background:#ddd;
+border-radius:15px;
+margin-bottom:12px;
+display:flex;
+align-items:center;
+justify-content:center;
+color:#777;
+font-size:14px;
+}
+
+.qty-control{
+display:flex;
+justify-content:center;
+align-items:center;
+gap:12px;
+margin-top:10px;
+}
+
+.qty-control button{
+width:32px;
+height:32px;
+border:none;
+border-radius:50%;
+cursor:pointer;
+background:#5d4037;
+color:white;
+font-weight:bold;
+transition:.3s;
+}
+
+.qty-control button:hover{
+background:#6ee7b7;
+color:#111;
+}
+
+/* ORDER */
+.order-section{
+display:flex;
+flex-wrap:wrap;
+gap:30px;
+margin:40px 20px 80px;
+}
+
+.form-box,.cart-box{
+flex:1;
+min-width:300px;
+background:rgba(255,255,255,.95);
+padding:30px;
+border-radius:20px;
+box-shadow:0 15px 40px rgba(0,0,0,.15);
+}
+
+body.dark .form-box,
+body.dark .cart-box{
+background:rgba(0,0,0,.6);
+}
+
+input,textarea{
+width:100%;
+padding:12px;
+margin-bottom:15px;
+border-radius:12px;
+border:1px solid #ccc;
+font-size:15px;
+}
+
+textarea{
+height:80px;
+resize:none;
+}
+
+input:focus,textarea:focus{
+outline:none;
+border-color:#6ee7b7;
+box-shadow:0 0 10px rgba(110,231,183,.8);
+}
+
+.cart-item{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:12px;
+font-size:14px;
+}
+
+.cart-buttons button{
+margin-left:6px;
+border:none;
+border-radius:6px;
+padding:5px 8px;
+cursor:pointer;
+font-size:12px;
+background:#5d4037;
+color:white;
+transition:.3s;
+}
+
+.cart-buttons button:hover{
+background:#6ee7b7;
+color:#111;
+}
+
+
+body.dark .send-btn{
+background:#6ee7b7;
+color:#111;
+}
+
+.send-btn:hover{
+box-shadow:0 0 20px rgba(110,231,183,.9);
+}
+
+
+/* ===== LANGUAGE FLAGS ===== */
+
+#lang-uk{
+background-image:url("https://flagcdn.com/w40/ua.png");
+background-size:cover;
+background-position:center;
+}
+
+#lang-en{
+background-image:url("https://flagcdn.com/w40/us.png");
+background-size:cover;
+background-position:center;
+}
+
+.lang-btn{
+width:28px;
+height:18px;
+border:2px solid #ff9800;
+border-radius:4px;
+cursor:pointer;
+transition:0.3s;
+background-repeat:no-repeat;
+}
+
+.lang-btn.active{
+box-shadow:0 0 8px #ff9800;
+}
+
+/* DARK MODE */
+body.dark .lang-btn{
+border-color:#6ee7b7;
+}
+
+body.dark .lang-btn.active{
+box-shadow:0 0 8px #6ee7b7;
+}
+/* ===== SEND BUTTON PROFESSIONAL STYLE ===== */
+
+.send-btn{
+background:#ff9800;
+color:#fff;
+border:none;
+padding:12px 18px;
+border-radius:8px;
+font-weight:600;
+cursor:pointer;
+transition:all 0.3s ease;
+}
+
+.send-btn:hover{
+transform:translateY(-2px);
+}
+
+/* ===== DARK MODE VERSION ===== */
+
+body.dark .send-btn{
+background:#6ee7b7;              /* акцент dark меню */
+color:#111;
+box-shadow:0 0 12px rgba(110,231,183,0.5);
+}
+
+body.dark .send-btn:hover{
+transform:translateY(-2px);
+box-shadow:0 8px 20px rgba(110,231,183,0.6);
+}
+
+.product-img{
+width:100%;
+max-width:220px;
+display:block;
+margin:0 auto 12px;
+border-radius:16px;
+box-shadow:0 8px 20px rgba(0,0,0,0.08);
+}
+
+
+/* ===== FOOTER ===== */
+
+.footer{
+text-align:center;
+padding:35px 0;
+margin-top:80px;
+font-size:14px;
+letter-spacing:1px;
+
+/* Світла тема */
+background:rgba(255,255,255,0.85);
+color:#4e342e;
+
+backdrop-filter:blur(6px);
+border-top:1px solid rgba(0,0,0,0.05);
+transition:background .4s ease, color .4s ease;
+}
+
+body.dark .footer{
+background:rgba(0,0,0,0.75);
+color:#aaa;
+border-top:1px solid rgba(255,255,255,0.08);
+}
+
+/* ================= MOBILE PRECISE LAYOUT ================= */
+.controls{
+display:grid;
+grid-template-columns:auto auto;
+align-items:center;
+column-gap:12px;
+margin-left:25px;
+}
+@media (max-width:768px){
+
+.items{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:14px;
+padding:0 10px;
+}
+.card{
+width:100%;
+max-width:none;
+padding:12px;
+border-radius:16px;
+}
+.product-img{
+width:100%;
+max-width:150px;
+margin:0 auto 10px;
+}
+.card h4{
+font-size:14px;
+margin-bottom:6px;
+}
+
+.card p{
+font-size:13px;
+}
+.qty-control button{
+width:28px;
+height:28px;
+font-size:14px;
+}
+.hero-left h2{
+font-size:26px;
+margin-bottom:12px;
+}
+.card{
+width:100%;
+max-width:280px;
+padding:14px;
+}
+.hero-left p{
+font-size:15px;
+line-height:1.65;
+opacity:0.9;
+}
+
+.hero-left{
+max-width:360px;
+margin:0 auto;
+}
+.product-img{
+max-width:200px;
+}
+header{
+display:grid;
+grid-template-columns:auto 1fr auto;
+align-items:center;
+padding:4px 8px;
+height:56px;
+}
+
+/* Лого зліва */
+.logo{
+justify-self:start;
+font-size:16px;
+line-height:1.1;
+}
+
+/* Центр */
+.menu-row{
+justify-self:center;
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:0px;
+line-height:1;
+}
+
+.menu-row a:first-child{
+display:none;
+}
+
+.menu-row a{
+font-size:14px;
+line-height:1.1;
+}
+
+/* Право */
+.controls{
+justify-self:end;
+display:grid;
+grid-template-columns:auto auto;
+align-items:center;
+column-gap:6px;
+}
+
+/* Тема */
+.theme-btn{
+width:32px;
+height:34px;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+/* Мови */
+.lang-wrapper{
+display:flex;
+flex-direction:column;
+justify-content:center;
+gap:4px;
+}
+
+/* Кнопки мови */
+.lang-btn{
+width:28px;
+height:18px;
+}
+
+main{
+padding-top:80px !important;
+}
+
+.hero{
+grid-template-columns:1fr;
+text-align:center;
+padding:70px 18px 25px;
+gap:20px;
+}
+
+.hero-right{
+width:100%;
+display:flex;
+justify-content:center;
+}
+
+.hero-right img{
+width:90%;
+max-width:320px;
+margin:20px auto 0;
+display:block;
+}
+.hero::before{
+background:linear-gradient(
+to right,
+rgba(255,255,255,0.95) 0%,
+rgba(255,255,255,0.9) 60%,
+rgba(255,255,255,0.7) 85%,
+rgba(255,255,255,0.4) 100%
+);
+}
+
+body.dark .hero::before{
+background:linear-gradient(
+to right,
+rgba(0,0,0,0.9) 0%,
+rgba(0,0,0,0.85) 60%,
+rgba(0,0,0,0.6) 85%,
+rgba(0,0,0,0.3) 100%
+);
+}
+}
+
+.hero-img{
+width:100%;
+max-width:420px;
+border-radius:20px;
+box-shadow:0 20px 40px rgba(0,0,0,.3);
+}
+
+
+/* ===== SCROLL ANIMATION ===== */
+
+.reveal{
+opacity:0;
+transform:translateY(40px);
+transition:all .8s cubic-bezier(.2,.65,.3,1);
+}
+
+.reveal.show{
+opacity:1;
+transform:translateY(0);
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+   <div class="logo">Coffee House ☕</div>
+
+   <div class="right-block">
+
+      <div class="menu-row">
+         <a href="#" id="navHome">Головна</a>
+         <a href="#menu" id="navMenu">Меню</a>
+         <a href="#order" id="navOrder">Замовлення</a>
+      </div>
+
+      <div class="controls">
+         <button class="theme-btn" onclick="toggleTheme()">🌙</button>
+
+         <div class="lang-wrapper">
+            <button id="lang-uk" class="lang-btn active"></button>
+            <button id="lang-en" class="lang-btn"></button>
+         </div>
+      </div>
+
+   </div>
+
+</header>
+
+<section class="hero">
+<div class="hero-left reveal">
+
+<h2 id="heroTitle">100% ПРЕМІАЛЬНА АРАБІКА</h2>
+
+<p id="heroText">
+Наша кава створена для тих, хто відчуває різницю. Її винятковий смак і насичений аромат — результат ретельно продуманого шляху від зерна до чашки.
+</p>
+
+<ul>
+<li id="heroLi1">Вирощена на високогірних плантаціях із природним мікрокліматом</li>
+<li id="heroLi2">Зібрана вручну — лише стиглі кавові ягоди</li>
+<li id="heroLi3">Ретельно очищена та відсортована</li>
+<li id="heroLi4">Доставлена в герметичному пакуванні</li>
+<li id="heroLi5">Свіже обсмаження — не більше трьох місяців</li>
+</ul>
+
+</div>
+
+<div class="hero-right reveal">
+<img 
+src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=800"
+class="hero-img">
+</div>
+
+</section>
+
+<main id="menu">
+
+<div class="category-title reveal" id="menuTitle">
+НАШЕ МЕНЮ
+</div>
+
+<div class="category-title reveal" onclick="toggleSection('drinks')" id="catDrinks">☕ Напої</div>
+<div id="drinks" class="section"><div class="items"></div></div>
+
+<div class="category-title reveal" onclick="toggleSection('croissants')" id="catCroissants">🥐 Круасани</div>
+<div id="croissants" class="section"><div class="items"></div></div>
+
+<div class="category-title reveal" onclick="toggleSection('desserts')" id="catDesserts">🍰 Десерти</div>
+<div id="desserts" class="section"><div class="items"></div></div>
+
+<div class="order-section reveal" id="order">
+
+<div class="form-box">
+<h3 id="formTitle">Ваші дані</h3>
+<input type="text" id="name" placeholder="Ваше ім'я">
+<input type="tel" id="phone" placeholder="Телефон (не обов'язково)">
+<textarea id="comment" placeholder="Коментар до замовлення"></textarea>
+<button class="send-btn" onclick="sendOrder()">Відправити замовлення</button>
+</div>
+
+<div class="cart-box">
+<h3 id="cartTitle">Кошик</h3>
+<div id="cartItems"></div>
+<h4><span id="totalLabel">Сума:</span> <span id="total">0</span> грн</h4>
+</div>
+
+</div>
+
+</main>
+
+<script>
+/* ===== SCROLL REVEAL ===== */
+
+const observer = new IntersectionObserver((entries)=>{
+entries.forEach(entry=>{
+if(entry.isIntersecting){
+entry.target.classList.add("show");
+}
+});
+},{
+threshold:0.15
+});
+
+document.querySelectorAll(".reveal").forEach(el=>{
+observer.observe(el);
+});    
+
+const TELEGRAM_TOKEN="8495496349:AAFfWMFAbRYdu9NNxbfNWKh8A-_0wmoKFvA";
+const CHAT_ID="8462363890";
+
+let currentLang = localStorage.getItem("lang") || "uk";
+let cart = {};
+
+/* ================= THEME ================= */
+function toggleTheme(){
+document.body.classList.toggle("dark");
+}
+
+/* ================= PRODUCTS ================= */
+const products = {
+
+drinks: [
+{ id:1, name:{uk:"Еспресо", en:"Espresso"}, price:50, img:"images/drinks-espresso.jpg" },
+{ id:2, name:{uk:"Допіо", en:"Doppio"}, price:60, img:"images/drinks-doppio.jpg" },
+{ id:3, name:{uk:"Американо", en:"Americano"}, price:55, img:"images/drinks-americano.jpg" },
+{ id:4, name:{uk:"Капучино", en:"Cappuccino"}, price:65, img:"images/drinks-cappuccino.jpg" },
+{ id:5, name:{uk:"Лате", en:"Latte"}, price:70, img:"images/drinks-latte.jpg" },
+{ id:6, name:{uk:"Раф", en:"Raf Coffee"}, price:80, img:"images/drinks-raf.jpg" }
+],
+
+croissants: [
+{ id:7, name:{uk:"Круасан класичний", en:"Classic Croissant"}, price:60, img:"images/croissant-classic.jpg" },
+{ id:8, name:{uk:"Круасан з шоколадом", en:"Chocolate Croissant"}, price:75, img:"images/croissant-chocolate.jpg" },
+{ id:9, name:{uk:"Круасан шинка-сир", en:"Ham & Cheese Croissant"}, price:90, img:"images/croissant-ham-cheese.jpg" },
+{ id:10, name:{uk:"Круасан з лососем", en:"Salmon Croissant"}, price:110, img:"images/croissant-salmon.jpg" }
+],
+
+desserts: [
+{ id:11, name:{uk:"Брауні", en:"Brownie"}, price:85, img:"images/dessert-brownie.jpg" },
+{ id:12, name:{uk:"Чізкейк", en:"Cheesecake"}, price:95, img:"images/dessert-cheesecake.jpg" },
+{ id:13, name:{uk:"Макарун", en:"Macaron"}, price:50, img:"images/dessert-macaron.jpg" },
+{ id:14, name:{uk:"Тірамісу", en:"Tiramisu"}, price:100, img:"images/dessert-tiramisu.jpg" }
+]
+
+};
+/* ================= CATEGORY ================= */
+function toggleSection(id){
+let section=document.getElementById(id);
+section.classList.toggle("open");
+}
+
+
+/* ================= FIND PRODUCT ================= */
+function findProduct(name){
+for(let cat in products){
+for(let item of products[cat]){
+if(item.name.uk===name) return item;
+}}
+return null;
+}
+
+/* ================= CHANGE QTY ================= */
+function changeQty(name,delta){
+let product=findProduct(name);
+if(!product) return;
+
+if(!cart[name]){
+if(delta>0) cart[name]={...product,qty:1};
+}else{
+cart[name].qty+=delta;
+if(cart[name].qty<=0) delete cart[name];
+}
+
+updateCart();
+updateDisplayedQty(name);
+}
+
+/* ================= UPDATE DISPLAYED QTY ================= */
+function updateDisplayedQty(name){
+let span=document.getElementById("qty-"+name);
+if(span) span.innerText=cart[name]?cart[name].qty:0;
+}
+
+/* ================= REMOVE ITEM ================= */
+function removeItem(name){
+delete cart[name];
+updateCart();
+updateDisplayedQty(name);
+}
+
+/* ================= UPDATE CART ================= */
+function updateCart(){
+const cartItems=document.getElementById("cartItems");
+cartItems.innerHTML="";
+let total=0;
+
+Object.keys(cart).forEach(key=>{
+let item=cart[key];
+total+=item.price*item.qty;
+
+const div=document.createElement("div");
+div.className="cart-item";
+
+div.innerHTML=`
+${item.name[currentLang]} x${item.qty} — ${item.price*item.qty} грн
+<div class="cart-buttons">
+<button onclick="changeQty('${key}',-1)">-</button>
+<button onclick="changeQty('${key}',1)">+</button>
+<button onclick="removeItem('${key}')">🗑</button>
+</div>
+`;
+
+cartItems.appendChild(div);
+});
+
+document.getElementById("total").innerText=total;
+}
+
+/* ================= SEND ORDER ================= */
+function sendOrder(){
+
+const name=document.getElementById("name").value.trim();
+const phone=document.getElementById("phone").value.trim();
+const comment=document.getElementById("comment").value.trim();
+
+if(!name){alert("Введіть ім'я");return;}
+if(Object.keys(cart).length===0){alert("Кошик порожній");return;}
+
+let total=0;
+let text=`☕ НОВЕ ЗАМОВЛЕННЯ\n\n👤 ${name}\n`;
+
+if(phone) text+=`📞 ${phone}\n`;
+if(comment) text+=`💬 ${comment}\n`;
+
+text+=`\n📦 Замовлення:\n`;
+
+Object.keys(cart).forEach(key=>{
+let item = cart[key];
+total += item.price * item.qty;
+text += `• ${item.name[currentLang]} x${item.qty} — ${item.price*item.qty} грн\n`;
+});
+
+text += `\n💰 Сума: ${total} грн`;
+
+fetch("/send-order", {
+  method:"POST",
+  headers:{"Content-Type":"application/json"},
+  body:JSON.stringify({text:text})
+})
+.then(res=>res.json())
+.then(data=>{
+  if(data.success){
+    alert("Замовлення відправлено!");
+  } else {
+    alert("Помилка сервера");
+  }
+});
+
+} // ← ФУНКЦІЯ ЗАКРИВАЄТЬСЯ ТУТ
+
+/* ================= LANGUAGE ================= */
+
+const translations = {
+
+uk:{
+home:"Головна",
+menu:"Меню",
+order:"Замовлення",
+hero:"100% ПРЕМІАЛЬНА АРАБІКА",
+heroText:"Наша кава створена для тих, хто відчуває різницю. Її винятковий смак і насичений аромат — результат ретельно продуманого шляху від зерна до чашки.",
+heroLi1:"Вирощена на високогірних плантаціях із природним мікрокліматом",
+heroLi2:"Зібрана вручну — лише стиглі кавові ягоди",
+heroLi3:"Ретельно очищена та відсортована",
+heroLi4:"Доставлена в герметичному пакуванні",
+heroLi5:"Свіже обсмаження — не більше трьох місяців",
+menuTitle:"НАШЕ МЕНЮ",
+drinks:"☕️ Напої",
+croissants:"🥐 Круасани",
+desserts:"🍰 Десерти",
+form:"Ваші дані",
+cart:"Кошик",
+total:"Сума:"
+},
+
+en:{
+home:"Home",
+menu:"Menu",
+order:"Order",
+hero:"100% PREMIUM ARABICA",
+heroText:"Our coffee is created for those who feel the difference. Its exceptional taste and rich aroma are the result of a carefully crafted journey from bean to cup.",
+heroLi1:"Grown on high-altitude plantations with a natural microclimate",
+heroLi2:"Hand-picked — only ripe coffee cherries",
+heroLi3:"Carefully cleaned and sorted",
+heroLi4:"Delivered in airtight packaging",
+heroLi5:"Freshly roasted — no more than three months old",
+menuTitle:"OUR MENU",
+drinks:"☕️ Drinks",
+croissants:"🥐 Croissants",
+desserts:"🍰 Desserts",
+form:"Your Details",
+cart:"Cart",
+total:"Total:"
+}
+
+};
+
+/* ================= SET LANG ================= */
+function setLang(lang){
+
+currentLang=lang;
+localStorage.setItem("lang",lang);
+
+document.querySelectorAll(".lang-btn")
+.forEach(b=>b.classList.remove("active"));
+
+document.getElementById("lang-"+lang)
+.classList.add("active");
+
+document.body.classList.add("lang-fade");
+
+setTimeout(()=>{
+
+applyLanguage(lang);
+
+createCards(products.drinks,"drinks");
+createCards(products.croissants,"croissants");
+createCards(products.desserts,"desserts");
+
+updateCart();
+
+document.body.classList.remove("lang-fade");
+
+},200);
+
+}
+
+/* ================= CREATE CARDS ================= */
+function createCards(items, sectionId){
+
+const container = document.querySelector(`#${sectionId} .items`);
+if(!container) return;
+
+container.innerHTML = "";
+
+items.forEach(item=>{
+
+const key = item.name.uk;
+
+const card = document.createElement("div");
+card.className = "card";
+
+card.innerHTML = `
+
+<img src="${item.img}" class="product-img">
+
+<h4>${item.name[currentLang]}</h4>
+
+<p>${item.price} грн</p>
+
+<div class="qty-control">
+
+<button onclick="changeQty('${key}',-1)">-</button>
+
+<span id="qty-${key}">0</span>
+
+<button onclick="changeQty('${key}',1)">+</button>
+
+</div>
+
+`;
+
+container.appendChild(card);
+
+});
+
+}
+
+/* ================= INIT ================= */
+function applyLanguage(lang){
+const t = translations[lang];
+
+document.getElementById("navHome").innerText = t.home;
+document.getElementById("navMenu").innerText = t.menu;
+document.getElementById("navOrder").innerText = t.order;
+
+document.getElementById("heroTitle").innerText = t.hero;
+document.getElementById("heroText").innerText = t.heroText;
+document.getElementById("heroLi1").innerText = t.heroLi1;
+document.getElementById("heroLi2").innerText = t.heroLi2;
+document.getElementById("heroLi3").innerText = t.heroLi3;
+document.getElementById("heroLi4").innerText = t.heroLi4;
+document.getElementById("heroLi5").innerText = t.heroLi5;
+
+document.getElementById("catDrinks").innerText = t.drinks;
+document.getElementById("catCroissants").innerText = t.croissants;
+document.getElementById("catDesserts").innerText = t.desserts;
+
+document.getElementById("formTitle").innerText = t.form;
+document.getElementById("cartTitle").innerText = t.cart;
+document.getElementById("totalLabel").innerText = t.total;
+
+document.getElementById("menuTitle").innerText = t.menuTitle;
+}
+
+document.addEventListener("DOMContentLoaded", function(){
+
+applyLanguage(currentLang);
+
+createCards(products.drinks,"drinks");
+createCards(products.croissants,"croissants");
+createCards(products.desserts,"desserts");
+
+updateCart();
+document.getElementById("lang-uk").onclick = () => setLang("uk");
+document.getElementById("lang-en").onclick = () => setLang("en");
+});
+
+</script>
+
+<footer class="footer">
+<p>Coffee House © 2026</p>
+</footer>
+
+</body>
+</html>
