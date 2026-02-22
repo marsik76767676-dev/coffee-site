@@ -10,7 +10,7 @@ app.use(express.static(__dirname));
 app.post("/send-order", async (req, res) => {
   try {
     const { name, phone, product, quantity } = req.body;
-
+console.log(req.body);
     // 🔥 1. Зберігаємо в базу
     db.run(
       `INSERT INTO orders (name, phone, product, quantity)
