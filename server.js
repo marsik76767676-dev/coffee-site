@@ -56,6 +56,8 @@ app.get("/orders", (req, res) => {
 ================================ */
 app.get("/admin", (req, res) => {
   const password = req.query.password;
+app.get("/admin", async (req, res) => {
+  const password = req.query.password;
 
   if (password !== process.env.ADMIN_PASSWORD) {
     return res.send(`
@@ -67,52 +69,30 @@ app.get("/admin", (req, res) => {
     `);
   }
 
-  db.all("SELECT * FROM orders ORDER BY id DESC", [], (err, rows) => {
-    if (err) {
-      return res.send("Error loading orders");
+  const result = await db.query(
+    "SELECT * FROM orders ORDER BY id DESC"
+  );
+  const rows = result.rows;
+
+  let totalOrders = rows.length;
+  let totalRevenue = 0;
+
+  rows.forEach(order => {
+    const match = order.text.match(/Сума: (\d+)/);
+    if (match) {
+      totalRevenue += parseInt(match[1]);
     }
-
-    let totalOrders = rows.length;
-    let totalRevenue = 0;
-
-    rows.forEach(order => {
-      const match = order.text.match(/Сума: (\d+)/);
-      if (match) {
-        totalRevenue += parseInt(match[1]);
-      }
-    });
-
-    let html = `
-      <html>
-      <head>
-        <title>Адмін панель</title>
-        <style>
-          body { font-family: Arial; background:#111; color:white; padding:20px }
-          .card { background:#222; padding:15px; margin-bottom:15px; border-radius:10px }
-          .date { color:#888; font-size:12px; margin-bottom:10px }
-          pre { white-space: pre-wrap }
-        </style>
-      </head>
-      <body>
-        <h1>☕ Адмін панель</h1>
-        <p>Замовлень: ${totalOrders}</p>
-        <p>Загальний дохід: ${totalRevenue} грн</p>
-        <hr>
-    `;
-
-    rows.forEach(order => {
-      html += `
-        <div class="card">
-          <div class="date">${order.created_at}</div>
-          <pre>${order.text}</pre>
-        </div>
-      `;
-    });
-
-    html += `</body></html>`;
-
-    res.send(html);
   });
+
+  let html = `<h1>☕ Адмін панель</h1>
+              <p>Замовлень: ${totalOrders}</p>
+              <p>Дохід: ${totalRevenue} грн</p><hr>`;
+
+  rows.forEach(order => {
+    html += `<pre>${order.text}</pre><hr>`;
+  });
+
+  res.send(html);
 });
 
 app.listen(PORT, () => {
