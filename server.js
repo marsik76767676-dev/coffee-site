@@ -55,6 +55,18 @@ app.get("/orders", (req, res) => {
    🧑‍💻 АДМІН ПАНЕЛЬ
 ================================ */
 app.get("/admin", (req, res) => {
+  const password = req.query.password;
+
+  if (password !== process.env.ADMIN_PASSWORD) {
+    return res.send(`
+      <h2>🔐 Введіть пароль</h2>
+      <form>
+        <input type="password" name="password" placeholder="Пароль" />
+        <button type="submit">Увійти</button>
+      </form>
+    `);
+  }
+
   db.all("SELECT * FROM orders ORDER BY id DESC", [], (err, rows) => {
     if (err) {
       return res.send("Error loading orders");
@@ -75,43 +87,17 @@ app.get("/admin", (req, res) => {
       <head>
         <title>Адмін панель</title>
         <style>
-          body {
-            font-family: Arial;
-            background: #111;
-            color: white;
-            padding: 20px;
-          }
-          h1 { color: #4CAF50; }
-          .stats {
-            background: #1e1e1e;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-          }
-          .card {
-            background: #222;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 10px;
-          }
-          .date {
-            color: #888;
-            font-size: 12px;
-            margin-bottom: 10px;
-          }
-          pre {
-            white-space: pre-wrap;
-          }
+          body { font-family: Arial; background:#111; color:white; padding:20px }
+          .card { background:#222; padding:15px; margin-bottom:15px; border-radius:10px }
+          .date { color:#888; font-size:12px; margin-bottom:10px }
+          pre { white-space: pre-wrap }
         </style>
       </head>
       <body>
         <h1>☕ Адмін панель</h1>
-
-        <div class="stats">
-          <h2>📊 Статистика</h2>
-          <p>Замовлень: <strong>${totalOrders}</strong></p>
-          <p>Загальний дохід: <strong>${totalRevenue} грн</strong></p>
-        </div>
+        <p>Замовлень: ${totalOrders}</p>
+        <p>Загальний дохід: ${totalRevenue} грн</p>
+        <hr>
     `;
 
     rows.forEach(order => {
@@ -123,14 +109,12 @@ app.get("/admin", (req, res) => {
       `;
     });
 
-    html += `
-      </body>
-      </html>
-    `;
+    html += `</body></html>`;
 
     res.send(html);
   });
 });
+
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 });
