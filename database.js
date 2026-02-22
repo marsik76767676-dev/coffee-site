@@ -2,7 +2,7 @@ const sqlite3 = require("sqlite3").verbose();
 const path = require("path");
 
 // 📂 Правильний шлях до файлу бази
-const dbPath = path.join(__dirname, "orders.db");
+const dbPath = path.join(__dirname, "orders_v2.db");
 
 // 📦 Створюємо або підключаємось до бази
 const db = new sqlite3.Database(dbPath, (err) => {

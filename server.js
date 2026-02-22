@@ -9,41 +9,30 @@ app.use(express.static(__dirname));
 
 app.post("/send-order", async (req, res) => {
   try {
-    const { name, phone, product, quantity } = req.body;
-console.log(req.body);
-    // 🔥 1. Зберігаємо в базу
+    const { text } = req.body;
+
+    console.log("Отримано:", text);
+
+    // Зберігаємо повний текст
     db.run(
-      `INSERT INTO orders (name, phone, product, quantity)
-       VALUES (?, ?, ?, ?)`,
-      [name, phone, product, quantity]
+      `INSERT INTO orders (text) VALUES (?)`,
+      [text]
     );
 
-    // 🔥 2. Відправляємо в Telegram
-    const response = await fetch(
+    // Відправляємо в Telegram
+    await fetch(
       `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           chat_id: process.env.CHAT_ID,
-          text: `
-Нове замовлення:
-Ім'я: ${name}
-Телефон: ${phone}
-Товар: ${product}
-Кількість: ${quantity}
-          `
+          text: text
         })
       }
     );
 
-    const data = await response.json();
-
-    if (data.ok) {
-      res.json({ success: true });
-    } else {
-      res.status(500).json({ success: false });
-    }
+    res.json({ success: true });
 
   } catch (error) {
     console.error(error);
