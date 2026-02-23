@@ -1,4 +1,5 @@
 console.log("🔥 NEW VERSION DEPLOYED");
+
 require("dotenv").config();
 const express = require("express");
 const db = require("./database");
@@ -8,19 +9,22 @@ const app = express();
 app.use(express.json());
 app.use(express.static(__dirname));
 
+/* ================================
+   📦 SEND ORDER
+================================ */
 app.post("/send-order", async (req, res) => {
   try {
     const { text } = req.body;
 
     console.log("Отримано:", text);
 
-    // Зберігаємо повний текст
-    db.run(
-      `INSERT INTO orders (text) VALUES (?)`,
+    // ✅ Зберігаємо в PostgreSQL
+    await db.query(
+      "INSERT INTO orders (text) VALUES ($1)",
       [text]
     );
 
-    // Відправляємо в Telegram
+    // ✅ Відправляємо в Telegram
     await fetch(
       `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendMessage`,
       {
@@ -32,7 +36,6 @@ app.post("/send-order", async (req, res) => {
         })
       }
     );
-
     res.json({ success: true });
 
   } catch (error) {
@@ -41,16 +44,23 @@ app.post("/send-order", async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3000;
-app.get("/orders", (req, res) => {
-  db.all("SELECT * FROM orders", [], (err, rows) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ error: err.message });
-    }
-    res.json(rows);
-  });
+/* ================================
+   📊 GET ORDERS
+================================ */
+app.get("/orders", async (req, res) => {
+  try {
+    const result = await db.query(
+      "SELECT * FROM orders ORDER BY id DESC"
+    );
+
+    res.json(result.rows);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "DB error" });
+  }
 });
+
 /* ================================
    🧑‍💻 АДМІН ПАНЕЛЬ
 ================================ */
@@ -68,11 +78,13 @@ app.get("/admin", async (req, res) => {
     `);
   }
 
-  db.all("SELECT * FROM orders ORDER BY id DESC", [], (err, rows) => {
+  try {
 
-    if (err) {
-      return res.send("DB error");
-    }
+    const result = await db.query(
+      "SELECT * FROM orders ORDER BY id DESC"
+    );
+
+    const rows = result.rows;
 
     let totalOrders = rows.length;
     let totalRevenue = 0;
@@ -97,9 +109,17 @@ app.get("/admin", async (req, res) => {
 
     res.send(html);
 
-  });
+  } catch (err) {
+    console.error(err);
+    res.send("DB error");
+  }
 
 });
+
+/* ================================
+   🚀 START SERVER
+================================ */
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
