@@ -54,9 +54,8 @@ app.get("/orders", (req, res) => {
 /* ================================
    🧑‍💻 АДМІН ПАНЕЛЬ
 ================================ */
-app.get("/admin", (req, res) => {
-  const password = req.query.password;
 app.get("/admin", async (req, res) => {
+
   const password = req.query.password;
 
   if (password !== process.env.ADMIN_PASSWORD) {
@@ -69,30 +68,37 @@ app.get("/admin", async (req, res) => {
     `);
   }
 
-  const result = await db.query(
-    "SELECT * FROM orders ORDER BY id DESC"
-  );
-  const rows = result.rows;
+  db.all("SELECT * FROM orders ORDER BY id DESC", [], (err, rows) => {
 
-  let totalOrders = rows.length;
-  let totalRevenue = 0;
-
-  rows.forEach(order => {
-    const match = order.text.match(/Сума: (\d+)/);
-    if (match) {
-      totalRevenue += parseInt(match[1]);
+    if (err) {
+      return res.send("DB error");
     }
+
+    let totalOrders = rows.length;
+    let totalRevenue = 0;
+
+    rows.forEach(order => {
+      const match = order.text?.match(/Сума: (\d+)/);
+      if (match) {
+        totalRevenue += parseInt(match[1]);
+      }
+    });
+
+    let html = `
+      <h1>☕ Адмін панель</h1>
+      <p>Замовлень: ${totalOrders}</p>
+      <p>Дохід: ${totalRevenue} грн</p>
+      <hr>
+    `;
+
+    rows.forEach(order => {
+      html += `<pre>${order.text}</pre><hr>`;
+    });
+
+    res.send(html);
+
   });
 
-  let html = `<h1>☕ Адмін панель</h1>
-              <p>Замовлень: ${totalOrders}</p>
-              <p>Дохід: ${totalRevenue} грн</p><hr>`;
-
-  rows.forEach(order => {
-    html += `<pre>${order.text}</pre><hr>`;
-  });
-
-  res.send(html);
 });
 
 app.listen(PORT, () => {
